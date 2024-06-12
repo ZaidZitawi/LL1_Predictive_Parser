@@ -1,5 +1,4 @@
 package com.example.ll1_predictive_parser;
-
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -11,10 +10,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,23 +21,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class HelloApplication extends Application {
-    String ButtonStyle2 = "-fx-background-color:#0598ff; -fx-background-color:transparent; -fx-font-size: 13; -fx-font-weight: bold;";
+    String ButtonStyle2 = "-fx-background-color: linear-gradient(#4a90e2, #007aff); -fx-background-radius: 30; -fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: white;";
 
-    Image load = new Image("C:\\Users\\DELL\\Idea Projects Ultimate\\LL1_Predictive_Parser\\src\\main\\java\\images\\img_1.png");
-    Image eraser = new Image("C:\\Users\\DELL\\Idea Projects Ultimate\\LL1_Predictive_Parser\\src\\main\\java\\images\\img.png");
-    Image analyze = new Image("C:\\Users\\DELL\\Idea Projects Ultimate\\LL1_Predictive_Parser\\src\\main\\java\\images\\img_2.png");
-    Image pars = new Image("C:\\Users\\DELL\\Idea Projects Ultimate\\LL1_Predictive_Parser\\src\\main\\java\\images\\img_3.png");
+    Image load = new Image(getClass().getResource("/img_1.png").toExternalForm());
+    Image eraser = new Image(getClass().getResource("/img.png").toExternalForm());
+    Image analyze = new Image(getClass().getResource("/img_2.png").toExternalForm());
+    Image pars = new Image(getClass().getResource("/img_3.png").toExternalForm());
 
     ImageView loadView = new ImageView(load);
     ImageView eraserView = new ImageView(eraser);
     ImageView analyzeView = new ImageView(analyze);
     ImageView parsView = new ImageView(pars);
 
-    private TextArea codeArea; // Declare codeArea to use it throughout the class
+    private TextArea codeArea;
     private TableView<Token> tokenTable; // Declare tokenTable to use it throughout the class
     private TextArea parsingProcessArea; // Declare parsingProcessArea to display parsing steps
-    private TextArea outputArea; // Declare outputArea to display the result of parsing
-    private Parser parser; // Declare a parser object
+    private TextArea outputArea;
+    private Parser parser;
 
     @Override
     public void start(Stage primaryStage) {
@@ -51,6 +47,7 @@ public class HelloApplication extends Application {
         codeArea = new TextArea();
         codeArea.setPromptText("Enter your code here...");
         VBox.setVgrow(codeArea, Priority.ALWAYS);
+        codeArea.setStyle("-fx-border-color: #4a90e2; -fx-border-width: 2px; -fx-background-color: #f0f8ff; -fx-font-family: 'Courier New'; -fx-font-size: 14px;");
 
         // Buttons initialization
         Button btnAnalyze = new Button("Analyze", analyzeView);
@@ -73,22 +70,24 @@ public class HelloApplication extends Application {
         // Setting up the button bar
         HBox buttonBar = new HBox(10, btnLoadFile, btnAnalyze, btnParse, btnClear);
         buttonBar.setPadding(new Insets(10));
-        buttonBar.setStyle("-fx-alignment: center;");
+        buttonBar.setStyle("-fx-alignment: center; -fx-background-color: #d6e9ff; -fx-background-radius: 20;");
         VBox leftBox = new VBox(10, buttonBar, codeArea);
         leftBox.setPadding(new Insets(10));
-        leftBox.setStyle("-fx-background-color: #f0f0f0;");
+        leftBox.setStyle("-fx-background-color: #e6f7ff; -fx-background-radius: 20;");
         borderPane.setLeft(leftBox);
 
         // Token table initialization
         tokenTable = new TableView<>();
         setupTokenTable(tokenTable);
         VBox.setVgrow(tokenTable, Priority.ALWAYS);
+        tokenTable.setStyle("-fx-border-color: #4a90e2; -fx-border-width: 2px;");
 
         // Parsing process area
         parsingProcessArea = new TextArea();
         parsingProcessArea.setPromptText("Parsing process steps will be displayed here...");
         parsingProcessArea.setEditable(false);
         parsingProcessArea.setPrefHeight(150);
+        parsingProcessArea.setStyle("-fx-border-color: #4a90e2; -fx-border-width: 2px; -fx-background-color: #f0f8ff;");
         VBox.setVgrow(parsingProcessArea, Priority.ALWAYS);
 
         // Output area initialization
@@ -96,14 +95,15 @@ public class HelloApplication extends Application {
         outputArea.setPromptText("Output of the parsing operation will be displayed here...");
         outputArea.setEditable(false);
         outputArea.setPrefHeight(150);
+        outputArea.setStyle("-fx-border-color: #4a90e2; -fx-border-width: 2px; -fx-background-color: #f0f8ff;");
         VBox.setVgrow(outputArea, Priority.ALWAYS);  // Make outputArea taller
 
         VBox rightBox = new VBox(10, new Label("Tokens"), tokenTable, new Label("Parsing Process"), parsingProcessArea, new Label("Output"), outputArea);
         rightBox.setPadding(new Insets(10));
-        rightBox.setStyle("-fx-background-color: #ffffff;");
+        rightBox.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 20;");
         borderPane.setRight(rightBox);
 
-        // Attach events
+        // Attach events handling for buttons
         btnLoadFile.setOnAction(e -> {
             loadFile(primaryStage);
             btnParse.setDisable(true); // Disable parse button when a new file is loaded
@@ -130,6 +130,7 @@ public class HelloApplication extends Application {
         imageView.setFitWidth(width);
     }
 
+    //Token Table Setup
     private void setupTokenTable(TableView<Token> table) {
         TableColumn<Token, Integer> lineColumn = new TableColumn<>("Line");
         lineColumn.setCellValueFactory(new PropertyValueFactory<>("line"));
@@ -149,6 +150,7 @@ public class HelloApplication extends Application {
         table.getColumns().addAll(lineColumn, tokenColumn, attributeColumn);
     }
 
+    //File Chooser And loading file
     private void loadFile(Stage stage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
@@ -166,6 +168,7 @@ public class HelloApplication extends Application {
         }
     }
 
+    // Lexical analyser analyzes the tokens
     private void analyzeCode() {
         String content = codeArea.getText();
         Scanner scanner = new Scanner(content); // Create a new Scanner instance
@@ -190,6 +193,7 @@ public class HelloApplication extends Application {
         }
     }
 
+    //Handle Parsing Operation
     private void parseTokens() {
         if (parser == null) {
             outputArea.setText("Please analyze the code before parsing.");
@@ -207,6 +211,8 @@ public class HelloApplication extends Application {
         }
     }
 
+
+    //DropShadow for Button styles
     public void dropShadow(Button btn) {
         // Add an effect to the button
         DropShadow dropShadow = new DropShadow();

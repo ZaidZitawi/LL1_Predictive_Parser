@@ -1,6 +1,7 @@
 package com.example.ll1_predictive_parser;
 
 import javafx.scene.control.TextArea;
+import javafx.util.Pair;
 
 import java.io.*;
 import java.util.*;
@@ -180,7 +181,7 @@ public class Parser {
     }
 
     public boolean parse() {
-        Stack<String> inputStack = new Stack<>();
+        Stack<Pair<String, Integer>> inputStack = new Stack<>();
         List<Token> inputTokens = new ArrayList<>();
         Token token;
 
@@ -191,14 +192,15 @@ public class Parser {
         }
         Collections.reverse(inputTokens);
         for (Token t : inputTokens) {
-            inputStack.push(t.getType());
+            inputStack.push(new Pair<>(t.getType(), t.getLine()));
         }
 
         // Parsing logic
         while (!stack.isEmpty() && !(stack.size() == 1 && stack.peek().equals("$") && inputStack.isEmpty())) {
             String top = stack.peek();
-            String inputHead = inputStack.isEmpty() ? "Empty Input Stack" : inputStack.peek();
-            currentLineNumber = getLineNumber(inputHead, inputTokens);
+            Pair<String, Integer> inputHeadPair = inputStack.isEmpty() ? new Pair<>("Empty Input Stack", -1) : inputStack.peek();
+            String inputHead = inputHeadPair.getKey();
+            int currentLineNumber = inputHeadPair.getValue();
 
             if (!inputStack.isEmpty() && top.equals(inputHead)) {
                 stack.pop();
@@ -261,6 +263,9 @@ public class Parser {
             return false;
         }
     }
+
+
+
 
     // Helper methods for error checks
     private boolean isKeywordTypo(String token) {
@@ -327,18 +332,9 @@ public class Parser {
     }
 
     private void reportError(String errorType, String expected, String found, int lineNumber) {
-        String errorMessage = String.format("%s error on line %d: \n Expected '%s' but found '%s' ", errorType, lineNumber, expected, found);
+        String errorMessage = String.format("%s error on line %d: Expected '%s' but found '%s'", errorType, lineNumber, expected, found);
         System.out.println(errorMessage);
         parsingProcessArea.appendText(errorMessage + "\n");
         outputTextArea.appendText(errorMessage + "\n");
-    }
-
-    private int getLineNumber(String tokenType, List<Token> tokens) {
-        for (Token token : tokens) {
-            if (token.getType().equals(tokenType)) {
-                return token.getLine();
-            }
-        }
-        return -1;
     }
 }
